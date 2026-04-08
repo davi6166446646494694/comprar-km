@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BRASIL PLAY ALPHAN - Comprar KM</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #0a001f, #1a0033, #2a0044);
+      color: #e0e0ff;
+      overflow-y: auto;
+    }
+
+    /* TELA DE ELOGIO (Loading) */
+    #loading-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(10, 0, 30, 0.98);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 100; transition: opacity 1.8s ease;
+    }
+    .logo {
+      text-align: center; margin-bottom: 50px;
+    }
+    .logo span {
+      display: block; font-family: 'Orbitron', sans-serif; font-weight: 700; letter-spacing: 8px;
+    }
+    .logo .play   { font-size: 82px; color: #ffffff; text-shadow: 0 0 30px #00ffc8; }
+    .logo .rpg    { font-size: 72px; color: #ff3366;  text-shadow: 0 0 25px #ff3366; }
+    .logo .alphan { font-size: 92px; color: #00ffc8;  text-shadow: 0 0 35px #00ffc8; }
+
+    .progress-bar { width: 520px; height: 16px; background: #1a0033; border-radius: 20px; overflow: hidden; box-shadow: 0 0 15px #00ffc8; }
+    .progress { height: 100%; width: 0%; background: linear-gradient(to right, #00ffc8, #00ffaa, #88ffcc); transition: width 0.4s ease; }
+
+    /* CONTEÚDO PRINCIPAL */
+    .overlay {
+      background: rgba(0, 0, 0, 0.75);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      background: rgba(15, 5, 40, 0.95);
+      padding: 40px 50px;
+      border-radius: 24px;
+      border: 3px solid #00ffc8;
+      box-shadow: 0 0 60px rgba(0, 255, 200, 0.5);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .logo-header {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 38px;
+      color: #ffd700;
+      text-shadow: 0 0 20px #ffd700;
+      margin-bottom: 8px;
+    }
+    h1 {
+      color: #00ffc8;
+      font-size: 28px;
+      margin: 0;
+    }
+
+    .explicacao {
+      background: rgba(0, 255, 200, 0.08);
+      border-left: 5px solid #00ffc8;
+      padding: 18px 22px;
+      margin: 25px 0;
+      border-radius: 12px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .tabela {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+      background: rgba(10, 0, 30, 0.9);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .tabela th, .tabela td {
+      padding: 16px;
+      border-bottom: 1px solid #00ffc840;
+      text-align: center;
+    }
+    .tabela th {
+      background: linear-gradient(#00ffc8, #00ccaa);
+      color: black;
+      font-weight: bold;
+    }
+    .tabela tr:hover {
+      background: rgba(0, 255, 200, 0.1);
+    }
+
+    select {
+      width: 100%;
+      padding: 16px;
+      font-size: 18px;
+      background: #1a0033;
+      color: white;
+      border: 2px solid #00ffc8;
+      border-radius: 12px;
+      margin: 15px 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 18px;
+      font-size: 19px;
+      font-weight: bold;
+      background: linear-gradient(45deg, #00ffc8, #00ffaa);
+      color: black;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin: 20px 0;
+      transition: all 0.3s;
+    }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 255, 200, 0.4);
+    }
+
+    .pix-area {
+      margin-top: 40px;
+      padding: 35px;
+      background: linear-gradient(145deg, #1a0033, #0f0022);
+      border: 3px dashed #ffd700;
+      border-radius: 20px;
+      display: none;
+      animation: fadeIn 0.8s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .numero-pix {
+      font-size: 32px;
+      font-weight: bold;
+      color: #ffd700;
+      background: #2a0044;
+      padding: 20px;
+      border-radius: 16px;
+      margin: 20px 0;
+      cursor: pointer;
+      border: 2px solid #ffd700;
+      transition: all 0.3s;
+    }
+    .numero-pix:hover {
+      background: #3a0055;
+      transform: scale(1.03);
+    }
+
+    .btn-whatsapp {
+      background: linear-gradient(45deg, #00c853, #25D366);
+      color: white;
+      padding: 18px;
+      font-size: 19px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 25px;
+    }
+    .btn-whatsapp:hover {
+      background: linear-gradient(45deg, #00b347, #1ebe5a);
+    }
+
+    .texto-final {
+      margin-top: 25px;
+      font-size: 16px;
+      color: #b0b0ff;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    .passo {
+      background: rgba(255, 215, 0, 0.1);
+      padding: 12px 18px;
+      border-radius: 10px;
+      margin: 12px 0;
+      border-left: 4px solid #ffd700;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TELA DE ELOGIO -->
+  <div id="loading-screen">
+    <div class="logo">
+      <span class="play">PLAY</span>
+      <span class="rpg">RPG</span>
+      <span class="alphan">ALPHAN</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    <div style="margin-top:18px; color:#88ffdd; font-size:18px;" id="status">INICIANDO SISTEMA...</div>
+  </div>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <div class="overlay" id="main-screen" style="display: none;">
+    <div class="container">
+      <div class="header">
+        <div class="logo-header">BRASIL PLAY ALPHAN</div>
+        <h1>Compre KM de forma rápida e segura</h1>
+      </div>
+
+      <div class="explicacao">
+        <strong>Como funciona?</strong><br>
+        1. Escolha a quantidade de KM que deseja<br>
+        2. Faça o pagamento via PIX para a chave abaixo<br>
+        3. Envie o comprovante no WhatsApp<br>
+        4. Seus KM serão creditados automaticamente em até 10 minutos!
+      </div>
+
+      <div class="passo">
+        <strong>Passo 1:</strong> Escolha a quantidade de KM abaixo
+      </div>
+
+      <table class="tabela">
+        <tr><th>Valor em Reais</th><th>KM que você recebe</th></tr>
+        <tr><td>R$ 10,00</td><td>1.000 KM</td></tr>
+        <tr><td>R$ 20,00</td><td>2.000 KM</td></tr>
+        <tr><td>R$ 30,00</td><td>3.000 KM</td></tr>
+        <tr><td>R$ 40,00</td><td>4.000 KM</td></tr>
+        <tr><td>R$ 50,00</td><td>5.000 KM</td></tr>
+        <tr><td>R$ 100,00</td><td>10.000 KM</td></tr>
+        <tr><td>R$ 150,00</td><td>15.000 KM</td></tr>
+        <tr><td>R$ 200,00</td><td>20.000 KM</td></tr>
+        <tr><td>R$ 300,00</td><td>30.000 KM</td></tr>
+        <tr><td>R$ 400,00</td><td>40.000 KM</td></tr>
+        <tr><td>R$ 500,00</td><td>50.000 KM</td></tr>
+        <tr><td>R$ 600,00</td><td>60.000 KM</td></tr>
+        <tr><td>R$ 800,00</td><td>80.000 KM</td></tr>
+      </table>
+
+      <select id="opcao" onchange="atualizarValor()">
+        <option value="">Selecione a quantidade de KM desejada</option>
+        <option value="1000">R$ 10,00 → 1.000 KM</option>
+        <option value="2000">R$ 20,00 → 2.000 KM</option>
+        <option value="3000">R$ 30,00 → 3.000 KM</option>
+        <option value="4000">R$ 40,00 → 4.000 KM</option>
+        <option value="5000">R$ 50,00 → 5.000 KM</option>
+        <option value="10000">R$ 100,00 → 10.000 KM</option>
+        <option value="15000">R$ 150,00 → 15.000 KM</option>
+        <option value="20000">R$ 200,00 → 20.000 KM</option>
+        <option value="30000">R$ 300,00 → 30.000 KM</option>
+        <option value="40000">R$ 400,00 → 40.000 KM</option>
+        <option value="50000">R$ 500,00 → 50.000 KM</option>
+        <option value="60000">R$ 600,00 → 60.000 KM</option>
+        <option value="80000">R$ 800,00 → 80.000 KM</option>
+      </select>
+
+      <div id="resumo" style="margin:30px 0; font-size:22px; text-align:center; min-height:50px; color:#00ffc8;"></div>
+
+      <button onclick="gerarPagamento()">✅ Fazer Pagamento via PIX Agora</button>
+
+      <!-- Área do PIX -->
+      <div id="pixArea" class="pix-area">
+        <h2 style="color:#ffd700; text-align:center;">💰 Pagamento via PIX</h2>
+        <p style="font-size:19px; text-align:center;">
+          <strong>Valor a pagar:</strong> <span id="valorFinal" style="color:#00ffcc; font-size:28px;"></span>
+        </p>
+
+        <div class="passo">
+          <strong>Passo 2:</strong> Copie a chave PIX abaixo e faça o pagamento
+        </div>
+
+        <div class="numero-pix" onclick="copiarChavePix()">
+          13458686428
+        </div>
+
+        <div class="passo">
+          <strong>Passo 3:</strong> Após pagar, envie o comprovante no WhatsApp
+        </div>
+
+        <a id="linkWhatsapp" href="#" target="_blank">
+          <button class="btn-whatsapp">
+            📲 ABRIR WHATSAPP E ENVIAR COMPROVANTE
+          </button>
+        </a>
+
+        <div class="texto-final">
+          Após fazer o PIX, clique no botão acima para abrir o WhatsApp.<br>
+          E envie o seu comprovante.<br><br>
+          <strong>Seus KM serão creditados automaticamente em até 10 minutos!</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Loading Screen
+    window.onload = function() {
+      let progress = 0;
+      const progressBar = document.getElementById('progress');
+      const status = document.getElementById('status');
+
+      const interval = setInterval(() => {
+        progress += Math.random() * 15 + 5;
+        if (progress > 100) progress = 100;
+        progressBar.style.width = progress + '%';
+
+        if (progress > 70) status.textContent = "QUASE PRONTO...";
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            document.getElementById('loading-screen').style.opacity = '0';
+            setTimeout(() => {
+              document.getElementById('loading-screen').style.display = 'none';
+              document.getElementById('main-screen').style.display = 'block';
+            }, 1800);
+          }, 600);
+        }
+      }, 110);
+    };
+
+    function atualizarValor() {
+      const km = document.getElementById("opcao").value;
+      const resumo = document.getElementById("resumo");
+      if (km) {
+        const valor = (km / 1000) * 10;
+        resumo.innerHTML = `✅ Você receberá <strong>\( {parseInt(km).toLocaleString('pt-BR')} KM</strong> por apenas <strong>R \) ${valor.toFixed(2)}</strong>`;
+      } else {
+        resumo.innerHTML = "";
+      }
+    }
+
+    function gerarPagamento() {
+      const opcao = document.getElementById("opcao").value;
+      if (!opcao) {
+        alert("⚠️ Por favor, selecione a quantidade de KM que deseja comprar.");
+        return;
+      }
+
+      const valor = (opcao / 1000) * 10;
+      document.getElementById("valorFinal").textContent = `R$ ${valor.toFixed(2)}`;
+      document.getElementById("pixArea").style.display = "block";
+
+      // Mensagem para o WhatsApp
+      const kmSelecionado = parseInt(opcao).toLocaleString('pt-BR');
+      const mensagem = encodeURIComponent(
+        `Olá, comprei quantidade ${kmSelecionado} KM\n` +
+        `Nome do jogo: \n` +
+        `Comprovante: (anexe o comprovante aqui)`
+      );
+      const link = `https://wa.me/8185622987?text=${mensagem}`;
+      document.getElementById("linkWhatsapp").href = link;
+
+      document.getElementById("pixArea").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function copiarChavePix() {
+      navigator.clipboard.writeText("13458686428").then(() => {
+        alert("✅ Chave PIX copiada: 13458686428\n\nFaça o pagamento e depois envie o comprovante no WhatsApp.");
+      });
+    }
+  </script>
+</body>
+</html>
